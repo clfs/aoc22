@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"log"
 )
 
 type Rucksack struct {
@@ -103,7 +102,6 @@ func parseGroups(r io.Reader) [][]Rucksack {
 
 		group = append(group, ruck)
 
-		log.Println(group)
 		if len(group) == 3 {
 			dst := make([]Rucksack, len(group))
 			copy(dst, group)
