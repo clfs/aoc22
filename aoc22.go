@@ -17,7 +17,7 @@ func ReadTestFile(t *testing.T, path string) []byte {
 	return data
 }
 
-func ParseLines[T encoding.TextUnmarshaler](r io.Reader, x T) ([]T, error) {
+func ParseLines[T encoding.TextUnmarshaler](r io.Reader) ([]T, error) {
 	var result []T
 
 	scanner := bufio.NewScanner(r)
