@@ -22,6 +22,7 @@ func ParseLines[T encoding.TextUnmarshaler](r io.Reader, x T) ([]T, error) {
 
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
+		var x T
 		if err := x.UnmarshalText(scanner.Bytes()); err != nil {
 			return nil, err
 		}
