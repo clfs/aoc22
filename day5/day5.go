@@ -73,7 +73,7 @@ func parse(r io.Reader) ([][]rune, []Move) {
 	// [N] [C]
 	// [Z] [M] [P]
 	//
-	// should return [][]rune{{'N', 'Z'}, {'M', 'C', 'D'}, {'P'}}
+	// should return [][]rune{{'Z', 'N'}, {'M', 'C', 'D'}, {'P'}}
 
 	data, err := io.ReadAll(r)
 	if err != nil {
