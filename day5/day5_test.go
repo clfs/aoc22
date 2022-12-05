@@ -31,7 +31,7 @@ func TestPart2(t *testing.T) {
 		want string
 	}{
 		{"testdata/small.txt", "MCD"},
-		{"testdata/input.txt", "SHQWSRBDL"},
+		{"testdata/input.txt", "CDTQZHBRS"},
 	}
 
 	for _, c := range cases {

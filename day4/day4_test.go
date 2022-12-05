@@ -30,7 +30,7 @@ func TestPart2(t *testing.T) {
 		name string
 		want int
 	}{
-		{"testdata/input.txt", 582},
+		{"testdata/input.txt", 893},
 		{"testdata/small.txt", 4},
 	}
 
