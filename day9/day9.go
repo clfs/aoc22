@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"log"
 	"math"
 	"strconv"
 	"strings"
@@ -95,7 +94,7 @@ func (r *Rope) update(dir Vec2) {
 
 	r.seen[r.Tail()] = true
 
-	log.Printf("%v\n", r.Debug(0, 0, 5, 5))
+	// log.Printf("%v\n", r.Debug(0, 0, 5, 5))
 }
 
 func (r *Rope) Debug(x0, y0, x1, y1 int) string {
@@ -172,8 +171,8 @@ func (r *Rope) Follow(ins Instruction) error {
 		return fmt.Errorf("bad direction: %s", ins.Direction)
 	}
 
-	log.Printf("== %s ==\n\n", ins)
-	log.Printf("%v\n", r.Debug(0, 0, 5, 5))
+	// log.Printf("== %s ==\n\n", ins)
+	// log.Printf("%v\n", r.Debug(0, 0, 5, 5))
 
 	for i := 0; i < ins.Count; i++ {
 		r.update(v)
@@ -191,8 +190,6 @@ func Part2(r io.Reader) (int, error) {
 }
 
 func solve(r io.Reader, n int) (int, error) {
-	log.SetOutput(io.Discard) // disable logging
-
 	rope, err := NewRope(n)
 	if err != nil {
 		return 0, err
