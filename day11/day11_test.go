@@ -51,5 +51,32 @@ func TestPart1(t *testing.T) {
 			}
 		})
 	}
+}
 
+func TestPart2(t *testing.T) {
+	cases := []struct {
+		name string
+		want int
+	}{
+		{"testdata/small.txt", 2713310158},
+		{"testdata/input.txt", 21553910156},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			f, err := os.Open(tc.name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer f.Close()
+
+			got, err := Part2(f)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.want {
+				t.Errorf("Part1() = %d, want %d", got, tc.want)
+			}
+		})
+	}
 }

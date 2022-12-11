@@ -116,10 +116,6 @@ func Part1(r io.Reader) (int, error) {
 				// Get bored with item.
 				m.Items[k] /= 3
 
-				log.Printf(
-					"Monkey %d has item %d with divisor %d, pass %d fail %d",
-					j, m.Items[k], m.Divisor, m.Pass, m.Fail)
-
 				if m.Items[k]%m.Divisor == 0 {
 					monkeys[m.Pass].Items = append(monkeys[m.Pass].Items, m.Items[k])
 				} else {
@@ -150,3 +146,70 @@ func SortedValues(m map[int]int) []int {
 	sort.Ints(result)
 	return result
 }
+
+func Part2(r io.Reader) (int, error) {
+	monkeys, err := Parse(r)
+	if err != nil {
+		return 0, err
+	}
+
+	megaMod := 1
+	for _, m := range monkeys {
+		megaMod *= m.Divisor
+	}
+
+	nInspections := make(map[int]int)
+
+	for i := 0; i < 10000; i++ {
+		log.Printf("==== round %d", i)
+		for j, m := range monkeys {
+			log.Printf("Monkey %d: %v", j, m.Items)
+		}
+
+		for j := range monkeys {
+			// Monkey inspects each item in its list.
+			for k := range monkeys[j].Items {
+				// Shrink the worry
+				monkeys[j].Items[k] %= megaMod
+
+				// Inspect and apply operation.
+				monkeys[j].Items[k] = monkeys[j].Operation(monkeys[j].Items[k])
+				nInspections[j]++
+
+				if monkeys[j].Items[k]%monkeys[j].Divisor == 0 {
+					monkeys[monkeys[j].Pass].Items = append(monkeys[monkeys[j].Pass].Items, monkeys[j].Items[k])
+				} else {
+					monkeys[monkeys[j].Fail].Items = append(monkeys[monkeys[j].Fail].Items, monkeys[j].Items[k])
+				}
+			}
+
+			// Monkey is done with its list. (This is the deletion.)
+			monkeys[j].Items = []int{}
+		}
+	}
+
+	log.Print(megaMod)
+	log.Print(nInspections)
+
+	values := SortedValues(nInspections)
+	return values[len(values)-1] * values[len(values)-2], nil
+}
+
+/*
+
+mod 8
+
+n = 1 (mod 8)
+n*n = 1 (mod 8)
+
+n = 2 (mod 8)
+n*n = 4 (mod 8)
+
+n = 3 (mod 8)
+n*n = 9 = 1 (mod 8)
+
+n = 4 (mod 8)
+n*n = 16 = 0 (mod 8)
+
+
+*/
