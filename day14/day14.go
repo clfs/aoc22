@@ -17,7 +17,7 @@ type Cave struct {
 const (
 	CaveWidth       = 2000
 	CaveWidthOffset = 1000
-	CaveHeight      = 600
+	CaveHeight      = 200
 	LeakX           = 500
 )
 
