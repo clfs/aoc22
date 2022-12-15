@@ -186,14 +186,7 @@ func NImpossibleSegment(sensors []Sensor, x, y int) int {
 
 	union := Union(ranges)
 
-	takenX := make(map[int]bool)
-	for _, s := range sensors {
-		if s.NearestBeacon.Y == y && s.NearestBeacon.X <= x {
-			takenX[s.NearestBeacon.X] = true
-		}
-	}
-
-	return LenUnion(union) - len(takenX)
+	return LenUnion(union)
 }
 
 func Part1(r io.Reader, y int) (int, error) {
