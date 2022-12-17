@@ -162,6 +162,34 @@ func TestPart1(t *testing.T) {
 	}
 }
 
+func TestPart2(t *testing.T) {
+	cases := []struct {
+		name string
+		want int
+	}{
+		{"testdata/small.txt", 1707},
+		//{"testdata/input.txt", 2615},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			f, err := os.Open(tc.name)
+			if err != nil {
+				t.Fatalf("failed to open %q: %v", tc.name, err)
+			}
+			defer f.Close()
+
+			got, err := Part2(f)
+			if err != nil {
+				t.Errorf("error: %v", err)
+			}
+			if got != tc.want {
+				t.Errorf("got %d, want %d", got, tc.want)
+			}
+		})
+	}
+}
+
 func TestVolcano_Evaluate(t *testing.T) {
 	volcano := NewVolcano(readValves(t, "testdata/small.txt"), 30)
 

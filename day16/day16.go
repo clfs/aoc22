@@ -280,7 +280,17 @@ func Part1(r io.Reader) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	return NewVolcano(valves, 30).Solve2(), nil
+	_, score := NewVolcano(valves, 30).Solve2()
+	return score, nil
+}
+
+func Part2(r io.Reader) (int, error) {
+	valves, err := Parse(r)
+	if err != nil {
+		return 0, err
+	}
+	score := NewVolcano(valves, 26).Solve3()
+	return score, nil
 }
 
 // RandSample returns a sample of size n from pop. It alters the order
@@ -444,7 +454,7 @@ new strategy:
 
 */
 
-func (v *Volcano) Solve2() int {
+func (v *Volcano) Solve2() ([]string, int) {
 	var targets []string
 	for _, name := range v.Nodes {
 		if v.IsClosed(name) && v.Rate(name) > 0 {
@@ -494,17 +504,119 @@ func (v *Volcano) Solve2() int {
 		}
 	}
 
+	return bestPath, bestScore
+}
+
+func (v *Volcano) Solve3() int {
+	var targets []string
+	for _, name := range v.Nodes {
+		if v.IsClosed(name) && v.Rate(name) > 0 {
+			targets = append(targets, name)
+		}
+	}
+
+	var (
+		bestScore int
+		bestPath  []string
+	)
+
+	var queue [][]string
+	for _, t := range targets {
+		queue = append(queue, []string{t})
+	}
+
+	for len(queue) > 0 {
+		path := queue[0]
+		queue = queue[1:]
+
+		score := v.Evaluate(path)
+		if score == 0 {
+			continue
+		}
+
+		// What if there was an elephant?
+
+		_, bonus := v.SolveElephant(path)
+		score += bonus
+
+		if score > bestScore {
+			bestScore = score
+			bestPath = path
+			log.Printf("⭐️ best score %d with path %v", bestScore, bestPath)
+		} else if score == 0 {
+			continue
+		}
+
+		for _, t := range targets {
+			tmp := make([]string, len(path))
+			copy(tmp, path)
+			tmp = append(tmp, t)
+
+			if len(tmp) > len(targets) {
+				// log.Printf("too long: %v", tmp)
+				break // exit from target appending
+			}
+			if !allUnique(tmp) {
+				// log.Printf("not unique: %v", tmp)
+				continue
+			}
+
+			queue = append(queue, tmp)
+		}
+	}
+
 	return bestScore
 }
 
-func isUseless(m map[string]bool, path []string) bool {
-	k := pathToKey(path)
-	for prefix := range m {
-		if strings.HasPrefix(k, prefix) {
-			return true
+func (v *Volcano) SolveElephant(used []string) ([]string, int) {
+	// Get all the targets that weren't attempted.
+	var targets []string
+	for _, name := range v.Nodes {
+		if v.IsClosed(name) && v.Rate(name) > 0 && !slices.Contains(used, name) {
+			targets = append(targets, name)
 		}
 	}
-	return false
+
+	var (
+		bestScore int
+		bestPath  []string
+	)
+
+	var queue [][]string
+	for _, t := range targets {
+		queue = append(queue, []string{t})
+	}
+
+	for len(queue) > 0 {
+		path := queue[0]
+		queue = queue[1:]
+
+		score := v.Evaluate(path)
+		if score > bestScore {
+			bestScore = score
+			bestPath = path
+			// log.Printf("⭐️ best score %d with path %v", bestScore, bestPath)
+		} else if score == 0 {
+			continue
+		}
+		for _, t := range targets {
+			tmp := make([]string, len(path))
+			copy(tmp, path)
+			tmp = append(tmp, t)
+
+			if len(tmp) > len(targets) {
+				// log.Printf("too long: %v", tmp)
+				break // exit from target appending
+			}
+			if !allUnique(tmp) {
+				// log.Printf("not unique: %v", tmp)
+				continue
+			}
+
+			queue = append(queue, tmp)
+		}
+	}
+	return bestPath, bestScore
 }
 
 func pathToKey(s []string) string {
