@@ -619,10 +619,6 @@ func (v *Volcano) SolveElephant(used []string) ([]string, int) {
 	return bestPath, bestScore
 }
 
-func pathToKey(s []string) string {
-	return strings.Join(s, ",")
-}
-
 func allUnique(s []string) bool {
 	seen := make(map[string]bool)
 	for _, v := range s {
