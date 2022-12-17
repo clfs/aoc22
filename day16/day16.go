@@ -280,7 +280,7 @@ func Part1(r io.Reader) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	return NewVolcano(valves, 30).Solve(), nil
+	return NewVolcano(valves, 30).Solve2(), nil
 }
 
 // RandSample returns a sample of size n from pop. It alters the order
@@ -443,3 +443,81 @@ new strategy:
 - if I have nothing left to check, return the best path
 
 */
+
+func (v *Volcano) Solve2() int {
+	var targets []string
+	for _, name := range v.Nodes {
+		if v.IsClosed(name) && v.Rate(name) > 0 {
+			targets = append(targets, name)
+		}
+	}
+
+	var (
+		bestScore int
+		bestPath  []string
+	)
+
+	var queue [][]string
+	for _, t := range targets {
+		queue = append(queue, []string{t})
+	}
+
+	for len(queue) > 0 {
+		path := queue[0]
+		queue = queue[1:]
+
+		score := v.Evaluate(path)
+		// log.Printf("score %d with path %v", score, path)
+		if score > bestScore {
+			bestScore = score
+			bestPath = path
+			log.Printf("⭐️ best score %d with path %v", bestScore, bestPath)
+		} else if score == 0 {
+			continue
+		}
+
+		for _, t := range targets {
+			tmp := make([]string, len(path))
+			copy(tmp, path)
+			tmp = append(tmp, t)
+
+			if len(tmp) > len(targets) {
+				// log.Printf("too long: %v", tmp)
+				break // exit from target appending
+			}
+			if !allUnique(tmp) {
+				// log.Printf("not unique: %v", tmp)
+				continue
+			}
+
+			queue = append(queue, tmp)
+		}
+	}
+
+	return bestScore
+}
+
+func isUseless(m map[string]bool, path []string) bool {
+	k := pathToKey(path)
+	for prefix := range m {
+		if strings.HasPrefix(k, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+func pathToKey(s []string) string {
+	return strings.Join(s, ",")
+}
+
+func allUnique(s []string) bool {
+	seen := make(map[string]bool)
+	for _, v := range s {
+		if seen[v] {
+			return false
+		}
+		seen[v] = true
+	}
+	return true
+}

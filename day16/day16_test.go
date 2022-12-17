@@ -95,8 +95,9 @@ func TestNewVolcano(t *testing.T) {
 			"II": false,
 			"JJ": false,
 		},
-		Location:  "AA",
-		TimeLimit: 30,
+		Location:     "AA",
+		TimeLimit:    30,
+		LenPathCache: map[string]map[string]int{},
 	}
 	got := NewVolcano(valves, limit)
 	if diff := cmp.Diff(want, got); diff != "" {
@@ -138,8 +139,8 @@ func TestPart1(t *testing.T) {
 		name string
 		want int
 	}{
-		//{"testdata/small.txt", 1651},
-		{"testdata/input.txt", 1},
+		{"testdata/small.txt", 1651},
+		{"testdata/input.txt", 2119},
 	}
 
 	for _, tc := range cases {
