@@ -168,7 +168,7 @@ func TestPart2(t *testing.T) {
 		want int
 	}{
 		{"testdata/small.txt", 1707},
-		//{"testdata/input.txt", 2615},
+		//{"testdata/input.txt", 2615}, // very slow! 804s
 	}
 
 	for _, tc := range cases {
